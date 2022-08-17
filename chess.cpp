@@ -8,14 +8,22 @@
 using namespace std;
 
 //Path of info txt
-string path = "/home/ubuntu/Desktop/Codes/Applicant Assesment Test_4_EK_AtFil/board1.txt";
+string path = "/home/mustafa/Desktop/Applicant Assesment Test_4_EK_AtFil/board1.txt";
 
 
 //Define Board for implement the every pieces on an array.
 string Board[8][8];
 
 //Initialize an array that will keep the threatened stones to be used in the score calculation
-string threatened_pieces[8][8];
+string threatened_pieces[8][8] = {
+{"--","--","--","--","--","--","--","--"},
+{"--","--","--","--","--","--","--","--"},
+{"--","--","--","--","--","--","--","--"},
+{"--","--","--","--","--","--","--","--"},
+{"--","--","--","--","--","--","--","--"},
+{"--","--","--","--","--","--","--","--"},
+{"--","--","--","--","--","--","--","--"},
+{"--","--","--","--","--","--","--","--"}};
 
 /*----------------------------------------------------------------------*/
 /*                      Define the Pieces classes                       */
@@ -136,6 +144,7 @@ for (int y = 0; y < 8; y++)
 	{
 		cout<<threatened_pieces[y][x]<<' ';
 	}
+	cout<<endl;
 }
 cout<<endl;
 }
@@ -159,4 +168,7 @@ for (int y = 0; y < 8; y++)
 int main()
 {
 	readBoard();
+	PutThePieces();
+
+	return 0;
 }
