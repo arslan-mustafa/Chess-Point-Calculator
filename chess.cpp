@@ -10,21 +10,19 @@ using namespace std;
 //Path of info txt
 string path = "board1.txt";
 
+/*----------------------------------------------------------------------------------------------*/
+/*							GLOBAL VARIABLES FOR CLASSES										*/
+/*----------------------------------------------------------------------------------------------*/
 
 //Define Board for implement the every pieces on an array.
-string Board[8][8];
+string Board[8][8];						// To read from .txt file
 
 //Initialize an array that will keep the threatened stones to be used in the score calculation
-string threatened_pieces[8][8] = {
-{"--","--","--","--","--","--","--","--"},
-{"--","--","--","--","--","--","--","--"},
-{"--","--","--","--","--","--","--","--"},
-{"--","--","--","--","--","--","--","--"},
-{"--","--","--","--","--","--","--","--"},
-{"--","--","--","--","--","--","--","--"},
-{"--","--","--","--","--","--","--","--"},
-{"--","--","--","--","--","--","--","--"}};
+string threatened_pieces[8][8] = {"--"};
 
+void readBoard();
+void PutThePieces();
+void Print_Thread();
 /*----------------------------------------------------------------------*/
 /*                      Define the Pieces classes                       */
 /*----------------------------------------------------------------------*/
@@ -36,126 +34,248 @@ class Pieces
 	//Define name and color of the pieces
 		char name;
 		char color;
-		int x,y;
+		bool thread;
+		int row;
+		int column;
+		virtual void isThread() = 0;
+/*
 	//assign constructor
 		Pieces(char n, char c, int pos_x, int pos_y)
 		{
 			n= name;
-			c = color;
-			x = pos_x;
-			y = pos_y;
+			row = pos_x;
+			column = pos_y;
 		}
-	//Pure virtual function
-		virtual void isThread() = 0;
+*/
 };
 
-class pawn
+class pawn: public Pieces
 {		// The class
 	public:
 		char pawn_color;
 		char pawn_name;
-		int x,y;
-		pawn(char col, char name, int pos_x, int pos_y)
+		int row,column;
+		pawn(string name, int pos_x, int pos_y)
 		{
-			pawn_color = col;
-			pawn_name = name;
-			x = pos_x;
-			y = pos_y;
-			isThread();
+			pawn_name = 'p';
+			if (name == "pb")
+				pawn_color = 'b';
+
+			else if(name == "ps" )
+				pawn_color = 's';
+			row = pos_y;
+			column = pos_x;
 		}
 		void isThread(void)
 		{
 			char c = pawn_color;
 		//Black side
-			if (c == 's' && Board[x + 1][y + 1] != "--" && Board[x - 1][y + 1] != "--")
+			if (c == 's' && Board[row + 1][column + 1] != "--" && Board[row + 1][column - 1] != "--")
 			{
-				if(x+1 <= 7 && y+1 <= 7)
-					threatened_pieces[x+1][y+1] = Board[x + 1][y + 1];
-				if(x-1 >= 0 && y+1 <= 7)
-					threatened_pieces[x+1][y+1] = Board[x - 1][y + 1];
+				if(row + 1 >= 0 && column + 1 <= 7)
+					threatened_pieces[row +1][column+1] = Board[row + 1][column + 1];
+				if(row-1 >= 0 && column -1 >= 0)
+					threatened_pieces[row + 1][column - 1] = Board[row + 1][column - 1];
+				threatened_pieces[row][column] = Board[row][column];
 			}
-			else if (c == 's' && Board[x+1][y+1] != "--")
+			else if (c == 's' && Board[row + 1][column + 1] != "--" )
 			{
-				if(x+1 <= 7 && y+1 <= 7)
-					threatened_pieces[x+1][y+1] = Board[x+1][y+1];
+				if(row + 1 >= 0 && column + 1 <= 7)
+					threatened_pieces[row +1][column+1] = Board[row + 1][column + 1];
 			}
-			else if (c == 's' && Board[x-1][y+1] != "--")
+			else if (c == 's' && Board[row + 1][column - 1] != "--" )
 			{
-				if(x-1 >= 0 && y+1 <= 7)
-					threatened_pieces[x-1][y+1] = Board[x-1][y+1];
+				if(row-1 >= 0 && column -1 >= 0)
+					threatened_pieces[row + 1][column - 1] = Board[row + 1][column - 1];
+				threatened_pieces[row][column] = Board[row][column];
 			}
+			
 		//white side
-			if (c == 'b' && Board[x + 1][y - 1] != "--" && Board[x - 1][y - 1] != "--")
+			if (c == 'b' && Board[row - 1][column + 1] != "--" && Board[row - 1][column - 1] != "--")
 			{
-				if(x+1 <= 7 && y-1 >= 0)
-					threatened_pieces[x+1][y-1] = Board[x + 1][y - 1];
-				if(x-1 <= 0 && y-1 >= 0)
-					threatened_pieces[x-1][y-1] = Board[x - 1][y - 1];
-				cout<<"debug1 "<<"x= "<<x+1<<" y= "<<y+1<<" "<<threatened_pieces[x+1][y-1]<< "      "<<endl;
+				if(row - 1 <= 7 && column + 1 <= 7)
+					threatened_pieces[row -1][column+1] = Board[row - 1][column + 1];
+				if(row - 1 <= 7 && column -1 >= 0)
+					threatened_pieces[row - 1][column - 1] = Board[row - 1][column + 1];
+				threatened_pieces[row][column] = Board[row][column];
 			}
-			else if (c == 'b' && Board[x-1][y-1] != "--")
+			else if (c == 's' && Board[row - 1][column + 1] != "--" )
 			{
-				if(x+1 <= 7 && y-1 >= 0)
-					threatened_pieces[x+1][y-1] = Board[x+1][y-1];
-					cout<<"debug2"<<endl;
+				if(row - 1 <= 7 && column + 1 <= 7)
+					threatened_pieces[row - 1][column+1] = Board[row - 1][column + 1];
 			}
-			else if (c == 'b' && Board[x-1][y-1] != "--")
+			else if (c == 's' && Board[row - 1][column - 1] != "--" )
 			{
-				if(x-1 >= 0 && y-1 >= 0)
-					threatened_pieces[x-1][y-1] = Board[x-1][y-1];
-					cout<<"debug3"<<endl;
+				if(row - 1 >= 0 && column - 1 >= 0)
+					threatened_pieces[row - 1][column - 1] = Board[row - 1][column - 1];
+				threatened_pieces[row][column] = Board[row][column];
 			}
-
 		}
 };
-	class bishop {
+
+	class knight: public Pieces 
+	{
+		char knight_color;
+		char knight_name;
+		int row,column;
+		knight(string name, int pos_x, int pos_y)
+		{
+			knight_name = 'a';
+			if (name == "ab")
+				knight_color = 'b';
+
+			else if(name == "as" )
+				knight_color = 's';
+			row = pos_y;
+			column = pos_x;
+		}
+		void isThread(void)
+		{
+		
+		}
 	};
-	class knight {
+
+
+	class queen: public Pieces
+	{
+		char queen_color;
+		char queen_name;
+		int row,column;
+		queen(string name, int pos_x, int pos_y)
+		{
+			queen_name = 'v';
+			if (name == "vb")
+				queen_color = 'b';
+
+			else if(name == "vs" )
+				queen_color = 's';
+			row = pos_y;
+			column = pos_x;
+		}
+		void isThread(void)
+		{
+		
+		}
 	};
-	class rook {
+
+	class bishop: public Pieces 
+	{
+		char bishop_color;
+		char bishop_name;
+		int row,column;
+		bishop(string name, int pos_x, int pos_y)
+		{
+			bishop_name = 'f';
+			if (name == "fb")
+				bishop_color = 'b';
+
+			else if(name == "fs" )
+				bishop_color = 's';
+			row = pos_y;
+			column = pos_x;
+		}
 	};
-	class queen { 
+	class rook: public Pieces
+	{
+		char rook_color;
+		char rook_name;
+		int row,column;
+		rook(string name, int pos_x, int pos_y)
+		{
+			rook_name = 'k';
+			if (name == "kb")
+				rook_color = 'b';
+
+			else if(name == "ks" )
+				rook_color = 's';
+			row = pos_y;
+			column = pos_x;
+		}
 	};
-	class king {
+
+	class king: public Pieces
+	{
+		char king_color;
+		char king_name;
+		int row,column;
+		king(string name, int pos_x, int pos_y)
+		{
+			king_name = 's';
+			if (name == "sb")
+				king_color = 'b';
+
+			else if(name == "ss" )
+				king_color = 's';
+			row = pos_y;
+			column = pos_x;
+		}
 	};
+	class empty: public Pieces
+	{
+		char name = 'e';
+	};
+
+/*----------------------------------------------------------------------------------------------*/
+/*							GLOBAL VARIABLES FOR FUNCTİONS										*/
+/*----------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------------------------------------------------------------*/
+/*									REQUIRED FUNCTIONS											*/
+/*----------------------------------------------------------------------------------------------*/
 
 void readBoard()
 {
-//Read the input file from the adress
-ifstream BoardText(path);
-//Put the datas into a string to seperate
-cout<<"Write on Board array"<<endl;
-for (int y = 0; y < 8; y++)
-{
-	for (int x = 0; x < 8; x++)
+	//Read the input file from the adress
+	ifstream BoardText(path);
+	//Put the datas into a string to seperate
+	cout << endl << "Write on Board array" << endl;
+	//for loop to assign names of Pieces from text file
+	for (int y = 0; y < 8; y++)							// Vertical axis loop
 	{
-			string substr;
-			if(x == 7)
+		for (int x = 0; x < 8; x++)						//Horizontal axis loop
+		{
+			string substr;							// sub string to hold pieces name
+			if(x == 7)								// if reach the end of line search for '\r'
 			{
 				getline(BoardText, substr, '\r');
-				Board[y][x] = substr;
-				cout<<substr;
+				Board[y][x] = substr;				// Assign name of the pieces on the Board array
+				cout<<substr;						//for monitoring the values of the pieces on the terminal
 			}
-			else
+			else									//search for space to seperate pieces
 			{
 				getline(BoardText, substr, ' ');
-				Board[y][x] = substr;
-				cout<<substr<<" ";
+				Board[y][x] = substr;				// Assign name of the pieces on the Board array
+				cout<<substr<<" ";					//for monitoring the values of the pieces on the terminal
 			}
+		}
 	}
 }
 
-cout<< endl<<endl<<"Read from Board Array"<<endl;
-for (int y = 0; y < 8; y++)
+// İnsert the pieces as objects
+void PutThePieces()
 {
-	for (int x = 0; x < 8; x++)
+Pieces ObjectBoard[8][8];
+for (int row = 0; row < 8; row++)
+{
+	for (int column = 0; column < 8; column++)
 	{
-		cout<<Board[y][x]<<' ';
+		ObjectBoard[row][column] = Pieces(Board[row][column], row,column);
 	}
 }
-cout<<endl;
+
+for (int row = 0; row < 8; row++)
+{
+	for (int column = 0; column < 8; column++)
+	{
+		ObjectBoard[row][column].isThread();
+		
+	}
+}
 }
 
+
+/*			This function is just for demo to watch the results is true or not*/
 void Print_Thread()
 {
 cout<< endl<<endl<<"print threat Array"<<endl;
@@ -179,24 +299,7 @@ for (int y = 0; y < 8; y++)
 cout<<endl;
 }
 
-void PutThePieces()
-{
-for (int y = 0; y < 8; y++)
-{
-	for (int x = 0; x < 8; x++)
-	{
-		if( Board[x][y] == "pb")
-		{
-			pawn('b', 'p', y, x);
-		}
-		else if(Board[x][y] == "ps")
-		{
-			pawn('s', 'p', y, x);
-		}
-	}
-}
 
-}
 int main()
 {
 	readBoard();
