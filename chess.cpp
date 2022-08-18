@@ -8,7 +8,7 @@
 using namespace std;
 
 //Path of info txt
-string path = "/home/mustafa/Desktop/Applicant Assesment Test_4_EK_AtFil/board1.txt";
+string path = "board1.txt";
 
 
 //Define Board for implement the every pieces on an array.
@@ -61,6 +61,7 @@ class pawn
 			pawn_name = name;
 			x = pos_x;
 			y = pos_y;
+			isThread();
 		}
 		void isThread(void)
 		{
@@ -68,30 +69,41 @@ class pawn
 		//Black side
 			if (c == 's' && Board[x + 1][y + 1] != "--" && Board[x - 1][y + 1] != "--")
 			{
-				threatened_pieces[x+1][y+1] = Board[x + 1][y + 1];
-				threatened_pieces[x+1][y+1] = Board[x - 1][y + 1];
+				if(x+1 <= 7 && y+1 <= 7)
+					threatened_pieces[x+1][y+1] = Board[x + 1][y + 1];
+				if(x-1 >= 0 && y+1 <= 7)
+					threatened_pieces[x+1][y+1] = Board[x - 1][y + 1];
 			}
 			else if (c == 's' && Board[x+1][y+1] != "--")
 			{
-				threatened_pieces[x+1][y+1] = Board[x+1][y+1];
+				if(x+1 <= 7 && y+1 <= 7)
+					threatened_pieces[x+1][y+1] = Board[x+1][y+1];
 			}
 			else if (c == 's' && Board[x-1][y+1] != "--")
 			{
-				threatened_pieces[x-1][y+1] = Board[x-1][y+1];
+				if(x-1 >= 0 && y+1 <= 7)
+					threatened_pieces[x-1][y+1] = Board[x-1][y+1];
 			}
 		//white side
 			if (c == 'b' && Board[x + 1][y - 1] != "--" && Board[x - 1][y - 1] != "--")
 			{
-				threatened_pieces[x+1][y-1] = Board[x - 1][y - 1];
-				threatened_pieces[x+1][y-1] = Board[x - 1][y - 1];
+				if(x+1 <= 7 && y-1 >= 0)
+					threatened_pieces[x+1][y-1] = Board[x + 1][y - 1];
+				if(x-1 <= 0 && y-1 >= 0)
+					threatened_pieces[x-1][y-1] = Board[x - 1][y - 1];
+				cout<<"debug1 "<<"x= "<<x+1<<" y= "<<y+1<<" "<<threatened_pieces[x+1][y-1]<< "      "<<endl;
 			}
 			else if (c == 'b' && Board[x-1][y-1] != "--")
 			{
-				threatened_pieces[x+1][y-1] = Board[x+1][y-1];
+				if(x+1 <= 7 && y-1 >= 0)
+					threatened_pieces[x+1][y-1] = Board[x+1][y-1];
+					cout<<"debug2"<<endl;
 			}
 			else if (c == 'b' && Board[x-1][y-1] != "--")
 			{
-				threatened_pieces[x-1][y-1] = Board[x-1][y-1];
+				if(x-1 >= 0 && y-1 >= 0)
+					threatened_pieces[x-1][y-1] = Board[x-1][y-1];
+					cout<<"debug3"<<endl;
 			}
 
 		}
@@ -119,11 +131,17 @@ for (int y = 0; y < 8; y++)
 	{
 			string substr;
 			if(x == 7)
+			{
 				getline(BoardText, substr, '\r');
+				Board[y][x] = substr;
+				cout<<substr;
+			}
 			else
+			{
 				getline(BoardText, substr, ' ');
-			Board[y][x] = substr;
-			cout<<substr<<" ";
+				Board[y][x] = substr;
+				cout<<substr<<" ";
+			}
 	}
 }
 
@@ -136,15 +154,27 @@ for (int y = 0; y < 8; y++)
 	}
 }
 cout<<endl;
+}
 
+void Print_Thread()
+{
 cout<< endl<<endl<<"print threat Array"<<endl;
 for (int y = 0; y < 8; y++)
 {
 	for (int x = 0; x < 8; x++)
 	{
-		cout<<threatened_pieces[y][x]<<' ';
+		if(x == 7)
+		{
+			if(threatened_pieces[y+1][0] != "--")
+				cout<<threatened_pieces[y][x];
+			else
+				cout<<threatened_pieces[y][x]<<endl;
+		}
+		else
+		{
+			cout<<threatened_pieces[y][x]<<' ';
+		}
 	}
-	cout<<endl;
 }
 cout<<endl;
 }
@@ -157,10 +187,12 @@ for (int y = 0; y < 8; y++)
 	{
 		if( Board[x][y] == "pb")
 		{
-			pawn('b', 'p', x, y);
+			pawn('b', 'p', y, x);
 		}
 		else if(Board[x][y] == "ps")
-			pawn('s', 'p', x, y);
+		{
+			pawn('s', 'p', y, x);
+		}
 	}
 }
 
@@ -169,6 +201,6 @@ int main()
 {
 	readBoard();
 	PutThePieces();
-
+	Print_Thread();
 	return 0;
 }

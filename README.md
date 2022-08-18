@@ -1,5 +1,5 @@
 # Chess-Point-Calculator
-This code is written in cpp language, written and tested in ubuntu OS.
+This code is written in cpp language, and tested in ubuntu OS.
 
 To test the code, you must correctly enter the address of the ".txt" file for the score calculation into the "path" variable in the chess.cpp file.
 
