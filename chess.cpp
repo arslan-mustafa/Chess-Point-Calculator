@@ -37,7 +37,7 @@ class Pieces
 		bool thread;
 		int row;
 		int column;
-		virtual void isThread() = 0;
+		virtual void isThread();
 };
 
 class pawn: public Pieces
@@ -264,13 +264,13 @@ for (int row = 0; row < 8; row++)
 		string name = Board[row][column];
 		if(name == "pb" or name == "ps")
 		{
-			pawn p (name, row, column);
+			new pawn p(name, row, column);
 			*ObjectBoard[row][column] = p;
 		}
 
 		else if(name == "ab" or name == "as")
 		{
-			knight p (name, row, column);
+			new knight p (name, row, column);
 			*ObjectBoard[row][column] = p;
 		}
 
