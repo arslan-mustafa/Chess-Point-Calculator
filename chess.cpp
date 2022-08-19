@@ -32,21 +32,12 @@ class Pieces
 {
 	public:
 	//Define name and color of the pieces
-		char name;
+		string name;
 		char color;
 		bool thread;
 		int row;
 		int column;
 		virtual void isThread() = 0;
-/*
-	//assign constructor
-		Pieces(char n, char c, int pos_x, int pos_y)
-		{
-			n= name;
-			row = pos_x;
-			column = pos_y;
-		}
-*/
 };
 
 class pawn: public Pieces
@@ -115,6 +106,7 @@ class pawn: public Pieces
 
 	class knight: public Pieces 
 	{
+		public:
 		char knight_color;
 		char knight_name;
 		int row,column;
@@ -129,15 +121,14 @@ class pawn: public Pieces
 			row = pos_y;
 			column = pos_x;
 		}
-		void isThread(void)
-		{
-		
-		}
+//		if()
+
 	};
 
 
 	class queen: public Pieces
 	{
+		public:
 		char queen_color;
 		char queen_name;
 		int row,column;
@@ -160,6 +151,7 @@ class pawn: public Pieces
 
 	class bishop: public Pieces 
 	{
+		public:
 		char bishop_color;
 		char bishop_name;
 		int row,column;
@@ -177,6 +169,7 @@ class pawn: public Pieces
 	};
 	class rook: public Pieces
 	{
+		public:
 		char rook_color;
 		char rook_name;
 		int row,column;
@@ -195,6 +188,7 @@ class pawn: public Pieces
 
 	class king: public Pieces
 	{
+		public:
 		char king_color;
 		char king_name;
 		int row,column;
@@ -212,7 +206,14 @@ class pawn: public Pieces
 	};
 	class empty: public Pieces
 	{
-		char name = 'e';
+		char emp;
+		int row,column;
+		empty(string name, int pos_x, int pos_y)
+		{
+			emp = 'e';
+			row = pos_y;
+			column = pos_x;
+		}
 	};
 
 /*----------------------------------------------------------------------------------------------*/
@@ -255,12 +256,50 @@ void readBoard()
 // İnsert the pieces as objects
 void PutThePieces()
 {
-Pieces ObjectBoard[8][8];
+Pieces *ObjectBoard[8][8];
 for (int row = 0; row < 8; row++)
 {
 	for (int column = 0; column < 8; column++)
 	{
-		ObjectBoard[row][column] = Pieces(Board[row][column], row,column);
+		string name = Board[row][column];
+		if(name == "pb" or name == "ps")
+		{
+			pawn p (name, row, column);
+			*ObjectBoard[row][column] = p;
+		}
+
+		else if(name == "ab" or name == "as")
+		{
+			knight p (name, row, column);
+			*ObjectBoard[row][column] = p;
+		}
+
+		else if(name == "vb" or name =="vs")
+		{
+			queen p (name, row, column);
+			*ObjectBoard[row][column] = p;
+		}
+
+		else if(name == "fb" or name =="fs")
+		{
+			bishop p (name, row, column);
+			*ObjectBoard[row][column] = p;
+		}
+
+		else if(name == "kb" or name =="ks")
+		{
+			rook p (name, row, column);
+			*ObjectBoard[row][column] = p;
+		}
+
+		else if(name == "sb" or name =="ss")
+		{
+			king p (name, row, column);
+			*ObjectBoard[row][column] = p;
+		}
+
+
+
 	}
 }
 
