@@ -16,7 +16,7 @@ string path = "board1.txt";
 
 //Define Board for implement the every pieces on an array.
 string Board[8][8];						// To read the pieces from .txt file
-string PiecesColor[8][8];				// To keep the pieces colors
+char PiecesColor[8][8];				// To keep the pieces colors
 string NoThreat[8][8];					// To keep the pieces that are not threatened
 string InThreat[8][8];					// To keep the pieces that are threatened
 
@@ -39,11 +39,11 @@ class pawn	// Class of pawns
 	public:
 		char pawn_color;			//color initialization
 		int row,column;				//position keeper
-		pawn(char color int pos_x, int pos_y)		//constructor to generate object
+		pawn(int pos_x, int pos_y)		//constructor to generate object
 		{
-			pawn_color = color;
 			row = pos_y;
 			column = pos_x;
+			pawn_color = PiecesColor[row][column];
 			isThread();
 		}
 		void isThread()
@@ -53,7 +53,7 @@ class pawn	// Class of pawns
 			{
 				if(row + 1 <= 7 && column + 1 <= 7 && Board[row + 1][column + 1]!= "--")// upper right cross
 				{
-					if ( PiecesColor[row + 1][column + 1] != 's')						// check the boundaries(board size)
+					if ( PiecesColor[row + 1][column + 1] == 's')						// check the boundaries(board size)
 					{
 						InThreat[row + 1][column + 1] = Board[row + 1][column + 1];		// put it in the threatened pieces array
 						NoThreat[row + 1][column + 1] = "--";							//remove it from safe pieces array
@@ -92,16 +92,17 @@ class pawn	// Class of pawns
 		}
 };
 
-	class knight: public Pieces 
+	class knight
 	{
 		public:
 		char knight_color;
 		int row,column;
-		knight(char color, int pos_x, int pos_y)
+		knight(int pos_x, int pos_y)
 		{
-			knight_color = color;
 			row = pos_y;
 			column = pos_x;
+			knight_color = PiecesColor[row][column];
+			isThread();
 		}
 		void isThread(void)
 		{
@@ -143,65 +144,316 @@ class pawn	// Class of pawns
 						NoThreat[row - 3][column - 1] = "--";							//remove it from safe pieces array
 					}
 				}
-			}
-			//upper right side check
-			else if (knight_color == 's' && Board[row + 1][column + 1] != "--" )
-			{
-				if(row + 1 >= 0 && column + 1 <= 7)
-					threatened_pieces[row +1][column+1] = Board[row + 1][column + 1];
-			}
-			//lower left
-			else if (knight_color == 's' && Board[row + 1][column - 1] != "--" )
-			{
-				if(row-1 >= 0 && column -1 >= 0)
-					threatened_pieces[row + 1][column - 1] = Board[row + 1][column - 1];
-				threatened_pieces[row][column] = Board[row][column];
-			}
-			
-		//white side
-			if (knight_color == 'b' && Board[row - 1][column + 1] != "--" && Board[row - 1][column - 1] != "--")
-			{
-				if(row - 1 <= 7 && column + 1 <= 7)
-					threatened_pieces[row -1][column+1] = Board[row - 1][column + 1];
-				if(row - 1 <= 7 && column -1 >= 0)
-					threatened_pieces[row - 1][column - 1] = Board[row - 1][column + 1];
-				threatened_pieces[row][column] = Board[row][column];
-			}
-			else if (knight_color == 's' && Board[row - 1][column + 1] != "--" )
-			{
-				if(row - 1 <= 7 && column + 1 <= 7)
-					threatened_pieces[row - 1][column+1] = Board[row - 1][column + 1];
-			}
-			else if (knight_color == 's' && Board[row - 1][column - 1] != "--" )
-			{
-				if(row - 1 >= 0 && column - 1 >= 0)
-					threatened_pieces[row - 1][column - 1] = Board[row - 1][column - 1];
-				threatened_pieces[row][column] = Board[row][column];
+
+
+				if(row + 1 <= 7 && column + 3 <=7 && Board[row + 1][column + 3] != "--") //right up
+				{
+					if ( PiecesColor[row + 1][column + 3] != 's')						// check the boundaries(board size)
+					{
+						InThreat[row + 1][column + 3] = Board[row + 1][column + 3];		// put it in the threatened pieces array
+						NoThreat[row + 1][column + 3] = "--";							//remove it from safe pieces array
+					}
+				}
+
+				if(row + 3 <= 7 && column + 1 <=7 && Board[row - 1][column + 3] != "--") //right down
+				{
+					if ( PiecesColor[row - 1][column + 3] != 's')						// check the boundaries(board size)
+					{
+						InThreat[row - 1][column + 3] = Board[row - 1][column + 3];		// put it in the threatened pieces array
+						NoThreat[row - 1][column + 3] = "--";							//remove it from safe pieces array
+					}
+				}
+
+				if(row + 1 <= 7 && column - 3 >=0 && Board[row + 1][column - 3] != "--") //left up
+				{
+					if ( PiecesColor[row + 1][column - 3] != 's')						// check the boundaries(board size)
+					{
+						InThreat[row + 1][column - 3] = Board[row + 1][column - 3];		// put it in the threatened pieces array
+						NoThreat[row + 1][column - 3] = "--";							//remove it from safe pieces array
+					}
+				}
+
+				if(row - 1 >= 0 && column -3 >=0 && Board[row - 1][column - 3] != "--") //left down
+				{
+					if ( PiecesColor[row - 1][column - 3] != 's')						// check the boundaries(board size)
+					{
+						InThreat[row - 1][column - 3] = Board[row - 1][column - 3];		// put it in the threatened pieces array
+						NoThreat[row - 1][column - 3] = "--";							//remove it from safe pieces array
+					}
+				}
 			}
 		}
 };
 
 
-	class queen: public Pieces
+	class queen
 	{
 		public:
 		char queen_color;
-		char queen_name;
 		int row,column;
-		queen(string name, int pos_x, int pos_y)
+		queen(int pos_x, int pos_y)
 		{
-			queen_name = 'v';
-			if (name == "vb")
-				queen_color = 'b';
-
-			else if(name == "vs" )
-				queen_color = 's';
 			row = pos_y;
 			column = pos_x;
+			queen_color = PiecesColor[row][column];
+			isThread();
 		}
 		void isThread(void)
 		{
-			if(queen_color == 'b')
+			//Black side
+			if (queen_color == 's')
+			{
+				for (int i = row; i<=7;i++)						//up side
+				{
+					if(Board[i][column] != "--")
+					{
+						if(PiecesColor[i][column] == 'b')
+						{
+							InThreat[i][column] = Board[i][column];				// put it in the threatened pieces array
+							NoThreat[i][column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+				for (int i = row; i>=0;i--)						//down side
+				{
+					if(Board[i][column] != "--")
+					{
+						if(PiecesColor[i][column] == 'b')
+						{
+							InThreat[i][column] = Board[i][column];				// put it in the threatened pieces array
+							NoThreat[i][column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+				for (int i = column; i <= 7; i++)				//right side
+				{
+					if(Board[row][i] != "--")
+					{
+						if(PiecesColor[row][i] == 'b')
+						{
+							InThreat[row][i] = Board[row][i];					// put it in the threatened pieces array
+							NoThreat[row][i] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+				for (int i = column; i>=0;i--)					//left side
+				{
+					if(Board[row][i] != "--")
+					{
+						if(PiecesColor[row][i] == 'b')
+						{
+							InThreat[row][i] = Board[row][i];					// put it in the threatened pieces array
+							NoThreat[row][i] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				int move_row = 0,move_column = 0;
+
+				while(move_row < 8 && move_column > -1)			//right up diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row -= 1;
+					move_column += 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 'b')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				while(move_row < 8 && move_column < 8)			//right down diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row += 1;
+					move_column += 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 'b')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				while(move_row > -1 && move_column > -1)			//left up diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row -= 1;
+					move_column -= 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 'b')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				while(move_row < 8 && move_column > -1)			//left down diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row += 1;
+					move_column -= 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 'b')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+			}
+			//white side
+			else if (queen_color == 'b')
+			{
+
+				for (int i = row; i<=7;i++)						//up side
+				{
+					if(Board[i][column] != "--")
+					{
+						if(PiecesColor[i][column] == 's')
+						{
+							InThreat[i][column] = Board[i][column];				// put it in the threatened pieces array
+							NoThreat[i][column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+				for (int i = row; i>=0;i--)						//down side
+				{
+					if(Board[i][column] != "--")
+					{
+						if(PiecesColor[i][column] == 's')
+						{
+							InThreat[i][column] = Board[i][column];				// put it in the threatened pieces array
+							NoThreat[i][column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+				for (int i = column; i <= 7; i++)				//right side
+				{
+					if(Board[row][i] != "--")
+					{
+						if(PiecesColor[row][i] == 's')
+						{
+							InThreat[row][i] = Board[row][i];					// put it in the threatened pieces array
+							NoThreat[row][i] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+				for (int i = column; i>=0;i--)					//left side
+				{
+					if(Board[row][i] != "--")
+					{
+						if(PiecesColor[row][i] == 's')
+						{
+							InThreat[row][i] = Board[row][i];					// put it in the threatened pieces array
+							NoThreat[row][i] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				int move_row = 0,move_column = 0;
+
+				while(move_row < 8 && move_column > -1)			//right up diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row -= 1;
+					move_column += 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 's')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				while(move_row < 8 && move_column < 8)			//right down diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row += 1;
+					move_column += 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 's')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				while(move_row > -1 && move_column > -1)			//left up diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row -= 1;
+					move_column -= 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 's')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				while(move_row < 8 && move_column > -1)			//left down diagonal
+				{
+					move_row = row;
+					move_column = column;
+					move_row += 1;
+					move_column -= 1;
+					
+					if(Board[move_row][move_column] != "--")
+					{
+						if(PiecesColor[move_row][move_column] == 's')
+						{
+							InThreat[move_row][move_column] = Board[move_row][move_column];	// put it in the threatened pieces array
+							NoThreat[move_row][move_column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+			}
+			
 		}
 	};
 
@@ -287,16 +539,87 @@ void readColors()
 			else
 				PiecesColor[y][x] = '-';
 
-			cout<<PiecesColor[y][x]<<" ";
+		}
+	}
+}
+
+void checkThreat()
+{
+	for (int y = 0; y < 8; y++)							// Vertical axis loop
+	{
+		for (int x = 0; x < 8; x++)						//Horizontal axis loop
+		{
+			if (Board[y][x] == "pb" || Board[y][x] == "ps")
+				pawn piyon(x,y);
+
+			else if (Board[y][x] == "ab" || Board[y][x] == "as")
+				knight at(x,y);
+
+			else if (Board[y][x] == "vb" || Board[y][x] == "vs")
+				queen vezir(x,y);
+		}
+	}
+};
+
+void printBoards()
+{
+	int row,column;
+	
+	cout<<"Readed board array"<<endl<<endl;
+	
+	for(row = 0; row <= 7; row++)
+	{
+		for(column = 0; column <= 7; column++)
+		{
+			cout<<Board[row][column]<<" ";
+		}
+	}
+	cout<<endl<<endl;
+
+
+	cout<<"Color array"<<endl<<endl;
+	
+	for(row = 0; row <= 7; row++)
+	{
+		for(column = 0; column <= 7; column++)
+		{
+			cout<<PiecesColor[row][column]<<" ";
 		}
 		cout<<endl;
 	}
+	cout<<endl<<endl;
+
+
+	cout<<"In threat array"<<endl<<endl;
+	
+	for(row = 0; row <= 7; row++)
+	{
+		for(column = 0; column <= 7; column++)
+		{
+			cout<<InThreat[row][column]<<" ";
+		}
+		cout<<endl;
+	}
+	cout<<endl<<endl;
+
+	cout<<"No thread array"<<endl<<endl;
+	
+	for(row = 0; row <= 7; row++)
+	{
+		for(column = 0; column <= 7; column++)
+		{
+			cout<<NoThreat[row][column]<<" ";
+		}
+	}
+	cout<<endl<<endl;
 }
 
 int main()
 {
 	readBoard();
 	readColors();
-	
+//	checkThreat();
+
+	printBoards();
 	return 0;
 }
