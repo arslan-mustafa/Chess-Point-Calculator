@@ -16,7 +16,7 @@ string path = "board1.txt";
 
 //Define Board for implement the every pieces on an array.
 string Board[8][8];						// To read from .txt file
-
+string PiecesColor[8][8];				// To keep the colors
 //Initialize an array that will keep the threatened stones to be used in the score calculation
 string threatened_pieces[8][8] = {"--"};
 
@@ -63,7 +63,7 @@ class pawn: public Pieces
 		//Black side
 			if (c == 's' && Board[row + 1][column + 1] != "--" && Board[row + 1][column - 1] != "--")
 			{
-				if(row + 1 >= 0 && column + 1 <= 7)
+				if(row + 1 <= 7 && column + 1 <= 7)
 					threatened_pieces[row +1][column+1] = Board[row + 1][column + 1];
 				if(row-1 >= 0 && column -1 >= 0)
 					threatened_pieces[row + 1][column - 1] = Board[row + 1][column - 1];
@@ -71,7 +71,7 @@ class pawn: public Pieces
 			}
 			else if (c == 's' && Board[row + 1][column + 1] != "--" )
 			{
-				if(row + 1 >= 0 && column + 1 <= 7)
+				if(row + 1 <= 7 && column + 1 <= 7)
 					threatened_pieces[row +1][column+1] = Board[row + 1][column + 1];
 			}
 			else if (c == 's' && Board[row + 1][column - 1] != "--" )
@@ -121,9 +121,54 @@ class pawn: public Pieces
 			row = pos_y;
 			column = pos_x;
 		}
-//		if()
-
-	};
+		void isThread(void)
+		{
+			//Black side
+			//upper side
+			if (knight_color == 's' && Board[row + 3][column + 1] != "--" && Board[row + 3][column - 1] != "--")
+			{
+				if(row + 3 >= 0 && column + 1 <= 7)
+					threatened_pieces[row +1][column+1] = Board[row + 1][column + 1];
+				if(row-1 >= 0 && column -1 >= 0)
+					threatened_pieces[row + 1][column - 1] = Board[row + 1][column - 1];
+				threatened_pieces[row][column] = Board[row][column];
+			}
+			//upper right side check
+			else if (knight_color == 's' && Board[row + 1][column + 1] != "--" )
+			{
+				if(row + 1 >= 0 && column + 1 <= 7)
+					threatened_pieces[row +1][column+1] = Board[row + 1][column + 1];
+			}
+			//lower left
+			else if (knight_color == 's' && Board[row + 1][column - 1] != "--" )
+			{
+				if(row-1 >= 0 && column -1 >= 0)
+					threatened_pieces[row + 1][column - 1] = Board[row + 1][column - 1];
+				threatened_pieces[row][column] = Board[row][column];
+			}
+			
+		//white side
+			if (knight_color == 'b' && Board[row - 1][column + 1] != "--" && Board[row - 1][column - 1] != "--")
+			{
+				if(row - 1 <= 7 && column + 1 <= 7)
+					threatened_pieces[row -1][column+1] = Board[row - 1][column + 1];
+				if(row - 1 <= 7 && column -1 >= 0)
+					threatened_pieces[row - 1][column - 1] = Board[row - 1][column + 1];
+				threatened_pieces[row][column] = Board[row][column];
+			}
+			else if (knight_color == 's' && Board[row - 1][column + 1] != "--" )
+			{
+				if(row - 1 <= 7 && column + 1 <= 7)
+					threatened_pieces[row - 1][column+1] = Board[row - 1][column + 1];
+			}
+			else if (knight_color == 's' && Board[row - 1][column - 1] != "--" )
+			{
+				if(row - 1 >= 0 && column - 1 >= 0)
+					threatened_pieces[row - 1][column - 1] = Board[row - 1][column - 1];
+				threatened_pieces[row][column] = Board[row][column];
+			}
+		}
+};
 
 
 	class queen: public Pieces
@@ -251,8 +296,60 @@ void readBoard()
 			}
 		}
 	}
+	cout<<endl<<endl;
 }
 
+void readColors()
+{
+	for (int y = 0; y < 8; y++)							// Vertical axis loop
+	{
+		for (int x = 0; x < 8; x++)						//Horizontal axis loop
+		{
+			if (Board[y][x] == "pb")
+				PiecesColor[y][x] = 'b';
+
+			else if (Board[y][x] == "ps")
+				PiecesColor[y][x] = 's';
+
+			else if (Board[y][x] == "ab")
+				PiecesColor[y][x] = 'b';
+
+			else if (Board[y][x] == "as")
+				PiecesColor[y][x] = 's';
+
+			else if (Board[y][x] == "vb")
+				PiecesColor[y][x] = 'b';
+
+			else if (Board[y][x] == "vs")
+				PiecesColor[y][x] = 's';
+
+			else if (Board[y][x] == "fb")
+				PiecesColor[y][x] = 'b';
+
+			else if (Board[y][x] == "fs")
+				PiecesColor[y][x] = 's';
+
+			else if (Board[y][x] == "kb")
+				PiecesColor[y][x] = 'b';
+
+			else if (Board[y][x] == "ks")
+				PiecesColor[y][x] = 's';
+
+			else if (Board[y][x] == "sb")
+				PiecesColor[y][x] = 'b';
+
+			else if (Board[y][x] == "ss")
+				PiecesColor[y][x] = 's';
+
+			else
+				PiecesColor[y][x] = '-';
+
+			cout<<PiecesColor[y][x]<<" ";
+		}
+		cout<<endl;
+	}
+}
+/*
 // İnsert the pieces as objects
 void PutThePieces()
 {
@@ -264,13 +361,13 @@ for (int row = 0; row < 8; row++)
 		string name = Board[row][column];
 		if(name == "pb" or name == "ps")
 		{
-			new pawn p(name, row, column);
+			pawn p(name, row, column);
 			*ObjectBoard[row][column] = p;
 		}
 
 		else if(name == "ab" or name == "as")
 		{
-			new knight p (name, row, column);
+			knight p (name, row, column);
 			*ObjectBoard[row][column] = p;
 		}
 
@@ -297,21 +394,20 @@ for (int row = 0; row < 8; row++)
 			king p (name, row, column);
 			*ObjectBoard[row][column] = p;
 		}
-
-
-
 	}
 }
+
 
 for (int row = 0; row < 8; row++)
 {
 	for (int column = 0; column < 8; column++)
 	{
-		ObjectBoard[row][column].isThread();
+		ObjectBoard[row][column]->isThread();
 		
 	}
 }
 }
+*/
 
 
 /*			This function is just for demo to watch the results is true or not*/
@@ -342,7 +438,8 @@ cout<<endl;
 int main()
 {
 	readBoard();
-	PutThePieces();
+	readColors();
+//	PutThePieces();
 	Print_Thread();
 	return 0;
 }
