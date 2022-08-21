@@ -8,7 +8,7 @@
 using namespace std;
 
 //Path of info txt
-string path = "board1.txt";
+string path = "/home/mustafa/Desktop/Chess-Point-Calculator-main/Applicant Assesment Test_4_EK_AtFil/board3.txt";
 
 /*----------------------------------------------------------------------------------------------*/
 /*							GLOBAL VARIABLES FOR CLASSES										*/
@@ -51,9 +51,9 @@ class pawn	// Class of pawns
 		//Black side
 			if (pawn_color == 's')
 			{
-				if(row + 1 <= 7 && column + 1 <= 7 && Board[row + 1][column + 1]!= "--")// upper right cross
+				if(row + 1 <= 7 && column + 1 < 8 && Board[row + 1][column + 1]!= "--")// upper right cross
 				{
-					if ( PiecesColor[row + 1][column + 1] == 's')						// check the boundaries(board size)
+					if ( PiecesColor[row + 1][column + 1] == 'b')						// check the boundaries(board size)
 					{
 						InThreat[row + 1][column + 1] = Board[row + 1][column + 1];		// put it in the threatened pieces array
 						NoThreat[row + 1][column + 1] = "--";							//remove it from safe pieces array
@@ -61,7 +61,7 @@ class pawn	// Class of pawns
 				}
 				else if(row + 1 <= 7 && column - 1 >= 0&& Board[row + 1][column - 1]!= "--")// upper left cross
 				{
-					if ( PiecesColor[row + 1][column - 1] != 's')						// check the boundaries(board size)
+					if ( PiecesColor[row + 1][column - 1] != 'b')						// check the boundaries(board size)
 					{
 						InThreat[row + 1][column - 1] = Board[row + 1][column - 1];		// put it in the threatened pieces array
 						NoThreat[row + 1][column - 1] = "--";							//remove it from safe pieces array
@@ -281,7 +281,7 @@ class pawn	// Class of pawns
 			//Black side
 			if (queen_color == 's')
 			{
-				for (int i = row; i<=7;i++)						//up side
+				for (int i = row - 1; i >= 0; i--)						//up side
 				{
 					if(Board[i][column] != "--")
 					{
@@ -294,7 +294,7 @@ class pawn	// Class of pawns
 					}
 				}
 
-				for (int i = row; i>=0;i--)						//down side
+				for (int i = row + 1; i <=7; i++)						//down side
 				{
 					if(Board[i][column] != "--")
 					{
@@ -307,7 +307,7 @@ class pawn	// Class of pawns
 					}
 				}
 
-				for (int i = column; i <= 7; i++)				//right side
+				for (int i = column + 1 ; i <= 7; i++)				//right side
 				{
 					if(Board[row][i] != "--")
 					{
@@ -320,7 +320,7 @@ class pawn	// Class of pawns
 					}
 				}
 
-				for (int i = column; i>=0;i--)					//left side
+				for (int i = column - 1; i>=0; i--)					//left side
 				{
 					if(Board[row][i] != "--")
 					{
@@ -333,16 +333,13 @@ class pawn	// Class of pawns
 					}
 				}
 
-				int move_row = 0,move_column = 0;
+				int move_row = row, move_column = column;
 
 				while(move_row > -1 || move_column < 8)			//right up diagonal
 				{
-					move_row = row;
-					move_column = column;
-					cout<<row<<" "<<column<<" "<<endl;
 					move_row -= 1;
 					move_column += 1;
-					if(move_row > -1 || move_column < 8)
+					if(move_row < 0 || move_column > 7)
 						break;
 					if(Board[move_row][move_column] != "--")
 					{
@@ -357,12 +354,10 @@ class pawn	// Class of pawns
 
 				while(move_row < 8 && move_column < 8)			//right down diagonal
 				{
-					move_row = row;
-					move_column = column;
 					move_row += 1;
 					move_column += 1;
-					if(move_row < 8 || move_column < 8)
-						break;
+					if(move_row > 7 || move_column > 7)
+						break;					
 					if(Board[move_row][move_column] != "--")
 					{
 						if(PiecesColor[move_row][move_column] == 'b')
@@ -376,11 +371,9 @@ class pawn	// Class of pawns
 
 				while(move_row > -1 && move_column > -1)			//left up diagonal
 				{
-					move_row = row;
-					move_column = column;
 					move_row -= 1;
 					move_column -= 1;
-					if(move_row > -1 || move_column > -1)
+					if(move_row == -1 || move_column == -1)
 						break;
 					if(Board[move_row][move_column] != "--")
 					{
@@ -395,11 +388,9 @@ class pawn	// Class of pawns
 
 				while(move_row < 8 && move_column > -1)			//left down diagonal
 				{
-					move_row = row;
-					move_column = column;
 					move_row += 1;
 					move_column -= 1;
-					if(move_row < 8 || move_column > -1)
+					if(move_row == 8 || move_column == -1)
 						break;
 					if(Board[move_row][move_column] != "--")
 					{
@@ -416,8 +407,20 @@ class pawn	// Class of pawns
 			//white side
 			else if (queen_color == 'b')
 			{
+				for (int i = row - 1; i >= 0; i--)						//up side
+				{
+					if(Board[i][column] != "--")
+					{
+						if(PiecesColor[i][column] == 's')
+						{
+							InThreat[i][column] = Board[i][column];				// put it in the threatened pieces array
+							NoThreat[i][column] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
 
-				for (int i = row; i>=0;i--)						//up side
+				for (int i = row + 1; i <=7; i++)						//down side
 				{
 					if(Board[i][column] != "--")
 					{
@@ -429,31 +432,8 @@ class pawn	// Class of pawns
 						break;
 					}
 				}
-				for (int i = row; i>=0;i--)						//down side
-				{
-					if(Board[i][column] != "--")
-					{
-						if(PiecesColor[i][column] == 's')
-						{
-							InThreat[i][column] = Board[i][column];				// put it in the threatened pieces array
-							NoThreat[i][column] = "--";							//remove it from safe pieces array
-						}
-						break;
-					}
-				}
-				for (int i = column; i <= 7; i++)				//right side
-				{
-					if(Board[row][i] != "--")
-					{
-						if(PiecesColor[row][i] == 's')
-						{
-							InThreat[row][i] = Board[row][i];					// put it in the threatened pieces array
-							NoThreat[row][i] = "--";							//remove it from safe pieces array
-						}
-						break;
-					}
-				}
-				for (int i = column; i>=0;i--)					//left side
+
+				for (int i = column + 1 ; i <= 7; i++)				//right side
 				{
 					if(Board[row][i] != "--")
 					{
@@ -466,15 +446,26 @@ class pawn	// Class of pawns
 					}
 				}
 
-				int move_row = 0,move_column = 0;
-
-				while(move_row < 8 && move_column > -1)			//right up diagonal
+				for (int i = column - 1; i>=0; i--)					//left side
 				{
-					move_row = row;
-					move_column = column;
+					if(Board[row][i] != "--")
+					{
+						if(PiecesColor[row][i] == 's')
+						{
+							InThreat[row][i] = Board[row][i];					// put it in the threatened pieces array
+							NoThreat[row][i] = "--";							//remove it from safe pieces array
+						}
+						break;
+					}
+				}
+
+				int move_row = row, move_column = column;
+
+				while(move_row > -1 || move_column < 8)			//right up diagonal
+				{
 					move_row -= 1;
 					move_column += 1;
-					if(move_row < 8 || move_column > -1)
+					if(move_row < 0 || move_column > 7)
 						break;
 					if(Board[move_row][move_column] != "--")
 					{
@@ -489,12 +480,10 @@ class pawn	// Class of pawns
 
 				while(move_row < 8 && move_column < 8)			//right down diagonal
 				{
-					move_row = row;
-					move_column = column;
 					move_row += 1;
 					move_column += 1;
-					if(move_row < 8 || move_column < 8)
-						break;
+					if(move_row > 7 || move_column > 7)
+						break;					
 					if(Board[move_row][move_column] != "--")
 					{
 						if(PiecesColor[move_row][move_column] == 's')
@@ -508,11 +497,9 @@ class pawn	// Class of pawns
 
 				while(move_row > -1 && move_column > -1)			//left up diagonal
 				{
-					move_row = row;
-					move_column = column;
 					move_row -= 1;
 					move_column -= 1;
-					if(move_row > -1 || move_column > -1)
+					if(move_row == -1 || move_column == -1)
 						break;
 					if(Board[move_row][move_column] != "--")
 					{
@@ -527,11 +514,9 @@ class pawn	// Class of pawns
 
 				while(move_row < 8 && move_column > -1)			//left down diagonal
 				{
-					move_row = row;
-					move_column = column;
 					move_row += 1;
 					move_column -= 1;
-					if(move_row < 8 || move_column > -1)
+					if(move_row == 8 || move_column == -1)
 						break;
 					if(Board[move_row][move_column] != "--")
 					{
@@ -642,12 +627,12 @@ void checkThreat()
 	{
 		for (int x = 0; x < 8; x++)						//Horizontal axis loop
 		{
-/*			if (Board[y][x] == "pb" || Board[y][x] == "ps")
+			if (Board[y][x] == "pb" || Board[y][x] == "ps")
 				pawn piyon(x,y);
 
 			else if (Board[y][x] == "ab" || Board[y][x] == "as")
 				knight at(x,y);
-*/
+
 			if (Board[y][x] == "vb" || Board[y][x] == "vs")
 				queen vezir(x,y);
 
@@ -709,6 +694,88 @@ void printBoards()
 	}
 	cout<<endl<<endl;
 }
+void calculatePoints()
+{
+	double whitePoint = 0;
+	double blackPoint = 0;
+	// loop for sum of points of threatened pieces
+	for (int row = 0; row < 8; row++)							// Vertical axis loop
+	{
+		for (int column = 0; column < 8; column++)				//Horizontal axis loop
+		{
+
+			if(PiecesColor[row][column] == 'b')					//check if it's color is white'
+			{
+				if(InThreat[row][column] == "pb")
+					whitePoint += pawn_point*0.5;
+				else if(InThreat[row][column] == "kb")
+					whitePoint += rook_point*0.5;
+				else if(InThreat[row][column] == "ab")
+					whitePoint += knight_point*0.5;
+				else if(InThreat[row][column] == "fb")
+					whitePoint += bishop_point*0.5;
+				else if(InThreat[row][column] == "vb")
+					whitePoint += queen_point*0.5;
+				else if(InThreat[row][column] == "sb")
+					whitePoint += king_point*0.5;
+			}
+			if(PiecesColor[row][column] == 's')					//check if it's color is white'
+			{
+				if(InThreat[row][column] == "ps")
+					blackPoint = blackPoint + pawn_point*0.5;
+				else if(InThreat[row][column] == "ks")
+					blackPoint += rook_point*0.5;
+				else if(InThreat[row][column] == "as")
+					blackPoint += knight_point*0.5;
+				else if(InThreat[row][column] == "fs")
+					blackPoint += bishop_point*0.5;
+				else if(InThreat[row][column] == "vs")
+					blackPoint += queen_point*0.5;
+				else if(InThreat[row][column] == "ss")
+					blackPoint += king_point*0.5;
+			}
+		}
+	}
+	for (int row = 0; row < 8; row++)							// Vertical axis loop
+	{
+		for (int column = 0; column < 8; column++)				//Horizontal axis loop
+		{
+
+			if(PiecesColor[row][column] == 'b')					//check if it's color is white'
+			{
+				if(NoThreat[row][column] == "pb")
+					whitePoint += pawn_point;
+				else if(NoThreat[row][column] == "kb")
+					whitePoint += rook_point;
+				else if(NoThreat[row][column] == "ab")
+					whitePoint += knight_point;
+				else if(NoThreat[row][column] == "fb")
+					whitePoint += bishop_point;
+				else if(NoThreat[row][column] == "vb")
+					whitePoint += queen_point;
+				else if(NoThreat[row][column] == "sb")
+					whitePoint += king_point;
+			}
+			if(PiecesColor[row][column] == 's')					//check if it's color is white'
+			{
+				if(NoThreat[row][column] == "ps")
+					blackPoint += pawn_point;
+				else if(NoThreat[row][column] == "ks")
+					blackPoint += rook_point;
+				else if(NoThreat[row][column] == "as")
+					blackPoint += knight_point;
+				else if(NoThreat[row][column] == "fs")
+					blackPoint += bishop_point;
+				else if(NoThreat[row][column] == "vs")
+					blackPoint += queen_point;
+				else if(NoThreat[row][column] == "ss")
+					blackPoint += king_point;
+			}
+		}
+	}
+	cout<<" white side point = "<<whitePoint<<endl;
+	cout<<" black side point = "<<blackPoint<<endl;
+}
 
 int main()
 {
@@ -716,5 +783,6 @@ int main()
 	readColors();
 	checkThreat();
 	printBoards();
+	calculatePoints();
 	return 0;
 }
