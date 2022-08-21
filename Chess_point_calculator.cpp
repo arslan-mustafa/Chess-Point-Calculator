@@ -24,7 +24,7 @@ int pawn_point   = 1,	rook_point  =	5;
 int knight_point = 3,	queen_point =	9;
 int bishop_point = 3,	king_point  = 100;
 
-//Initialize all of the functions
+//Declare all of the functions
 void readBoard();					// To read board from .txt
 void readColors();					// To read colors from Board Array and generate the class objects
 void calculatePoint();				// To calculate the points of each side
